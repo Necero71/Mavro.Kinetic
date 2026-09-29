@@ -20,7 +20,7 @@ Official web presence and portfolio repository for Mavro.kinetic Web Design—wh
 
 🚀 Local Development
 Clone the repo and open index.html in any modern browser to view or test locally:
-git clone https://github.com/your-username/mavro.kinetic-web-design.git
+git clone https://necero71.github.io/mavro.kinetic/
 cd mavro.kinetic-web-design
 # Open index.html directly or serve with a local static server
 
