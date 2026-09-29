@@ -1,0 +1,688 @@
+```html
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mavro.kinetic — High-Performance Web Design & Tactical Architecture</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        tactical: {
+                            950: '#090b09', // Deep obsidian background
+                            900: '#111511', // Dark card background
+                            800: '#1b221b', // Border / Hover
+                            700: '#2b362b', // Secondary accents
+                            olive: '#4B5320', // Tactical Olive Green
+                            'olive-light': '#636e2b',
+                            coyote: '#81583E', // Coyote Brown
+                            tan: '#D2B48C', // Tan accent
+                            sand: '#F4EFEA'  // Bright off-white text
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #090b09;
+            color: #F4EFEA;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        /* Tactical grid background pattern */
+        .tactical-grid {
+            background-image: 
+                linear-gradient(to right, rgba(75, 83, 32, 0.07) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(75, 83, 32, 0.07) 1px, transparent 1px);
+            background-size: 48px 48px;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090b09;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2b362b;
+            border-radius: 2px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4B5320;
+        }
+        .glow-olive {
+            box-shadow: 0 0 30px rgba(75, 83, 32, 0.4);
+        }
+        .glow-coyote {
+            box-shadow: 0 0 30px rgba(129, 88, 62, 0.3);
+        }
+        .clip-corner {
+            clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+        }
+    </style>
+</head>
+<body class="bg-tactical-950 text-tactical-sand selection:bg-tactical-olive selection:text-white relative">
+
+    <header class="fixed top-0 left-0 right-0 z-50 bg-tactical-950/85 backdrop-blur-md border-b border-tactical-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo with #71 Driver Motif -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 bg-tactical-olive text-tactical-sand font-mono font-black text-sm flex items-center justify-center clip-corner border border-tactical-coyote/60 group-hover:border-tactical-tan transition-colors shadow-lg">
+                    71
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-bold tracking-wider text-base sm:text-lg font-mono text-tactical-sand flex items-center gap-1">
+                        @mavro<span class="text-tactical-coyote">.</span>kinetic
+                    </span>
+                    <span class="text-[9px] text-tactical-tan/60 tracking-widest uppercase font-mono">Precision Web Architecture</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium tracking-wide font-mono">
+                <a href="#services" class="text-tactical-tan/80 hover:text-tactical-sand transition-colors">SERVICES</a>
+                <a href="#work" class="text-tactical-tan/80 hover:text-tactical-sand transition-colors">OPERATIONS</a>
+                <a href="#philosophy" class="text-tactical-tan/80 hover:text-tactical-sand transition-colors">PHILOSOPHY</a>
+                <a href="#contact" class="text-tactical-tan/80 hover:text-tactical-sand transition-colors">CONTACT</a>
+            </nav>
+
+            <!-- CTA Button & Mobile Trigger -->
+            <div class="flex items-center gap-4">
+                <a href="#contact" class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 bg-tactical-olive hover:bg-tactical-olive-light text-tactical-sand font-mono text-xs uppercase tracking-widest clip-corner transition-all duration-300 border border-tactical-coyote/50 shadow-md">
+                    <span>Initialize Brief</span>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </a>
+                <button id="mobile-menu-btn" class="md:hidden text-tactical-tan hover:text-tactical-sand p-2">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-tactical-900 border-b border-tactical-800 px-6 py-6 space-y-4 font-mono">
+            <a href="#services" class="block text-tactical-tan hover:text-tactical-sand text-sm uppercase">Services</a>
+            <a href="#work" class="block text-tactical-tan hover:text-tactical-sand text-sm uppercase">Operations</a>
+            <a href="#philosophy" class="block text-tactical-tan hover:text-tactical-sand text-sm uppercase">Philosophy</a>
+            <a href="#contact" class="block text-tactical-tan hover:text-tactical-sand text-sm uppercase">Contact</a>
+            <div class="pt-2">
+                <a href="#contact" class="w-full inline-block text-center px-5 py-3 bg-tactical-olive text-tactical-sand font-mono text-xs uppercase tracking-widest clip-corner">
+                    Initialize Brief
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <section class="relative min-h-screen flex items-center justify-center pt-24 pb-16 tactical-grid overflow-hidden">
+        <!-- Ambient lighting -->
+        <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[650px] bg-tactical-olive/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-10 right-10 w-[400px] h-[400px] bg-tactical-coyote/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full py-12">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <div class="lg:col-span-8 space-y-8">
+                    <!-- Status Badge -->
+                    <div class="inline-flex items-center gap-3 px-3.5 py-1.5 bg-tactical-900/90 border border-tactical-700/80 rounded-full text-xs font-mono text-tactical-tan">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="tracking-wider">UNIT 71 // TELEMETRY & WEB ARCHITECTURE ACTIVE</span>
+                    </div>
+
+                    <!-- Main Headline -->
+                    <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight uppercase leading-[1.05]">
+                        High-Performance <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-tactical-tan via-tactical-coyote to-tactical-olive">Precision Web Design</span>
+                    </h1>
+
+                    <!-- Subtitle -->
+                    <p class="text-lg sm:text-xl text-tactical-tan/80 max-w-2xl font-light leading-relaxed">
+                        We forge blistering-fast digital platforms, tactical user interfaces, and uncompromising web design inspired by endurance motorsport and elite military precision.
+                    </p>
+
+                    <!-- CTA Buttons -->
+                    <div class="flex flex-wrap items-center gap-4 pt-2">
+                        <a href="#work" class="px-8 py-4 bg-tactical-olive hover:bg-tactical-olive-light text-tactical-sand font-mono text-sm font-bold uppercase tracking-wider clip-corner border border-tactical-coyote/60 transition-all duration-300 glow-olive flex items-center gap-3">
+                            <span>Explore Operations</span>
+                            <i class="fa-solid fa-arrow-down text-xs"></i>
+                        </a>
+                        <a href="#contact" class="px-8 py-4 bg-tactical-900 hover:bg-tactical-800 text-tactical-tan hover:text-tactical-sand font-mono text-sm font-bold uppercase tracking-wider clip-corner border border-tactical-700 transition-all duration-300">
+                            Request Consultation
+                        </a>
+                    </div>
+
+                    <!-- Telemetry Stats Bar -->
+                    <div class="grid grid-cols-3 gap-6 pt-8 border-t border-tactical-800/80 max-w-xl font-mono">
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-black text-tactical-sand">0.12s</div>
+                            <div class="text-xs text-tactical-tan/60 uppercase tracking-widest mt-1">Avg Load Speed</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-black text-tactical-coyote">99.9%</div>
+                            <div class="text-xs text-tactical-tan/60 uppercase tracking-widest mt-1">Uptime SLA</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-black text-tactical-olive-light">100%</div>
+                            <div class="text-xs text-tactical-tan/60 uppercase tracking-widest mt-1">Custom Built</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Driver #71 Telemetry Card -->
+                <div class="lg:col-span-4 relative">
+                    <div class="relative bg-tactical-900 border border-tactical-700/80 p-6 sm:p-8 clip-corner shadow-2xl glow-coyote">
+                        <!-- Spec badge -->
+                        <div class="absolute top-0 right-0 bg-tactical-coyote text-tactical-950 font-mono text-[10px] font-bold px-3 py-1 uppercase tracking-widest">
+                            SPEC 71
+                        </div>
+
+                        <div class="space-y-6">
+                            <div class="flex items-center justify-between border-b border-tactical-800 pb-4">
+                                <span class="font-mono text-xs text-tactical-tan/70 uppercase">Telemetry HUD</span>
+                                <i class="fa-solid fa-crosshairs text-tactical-olive"></i>
+                            </div>
+
+                            <!-- Terminal block -->
+                            <div class="font-mono text-xs space-y-2 text-tactical-tan/90 bg-tactical-950 p-4 border border-tactical-800">
+                                <p class="text-tactical-coyote">// MAVRO KINETIC ENGINE</p>
+                                <p><span class="text-tactical-olive-light">const</span> chassis = <span class="text-tactical-tan">"Tactical UI"</span>;</p>
+                                <p><span class="text-tactical-olive-light">const</span> velocity = <span class="text-tactical-tan">"Sub-Second"</span>;</p>
+                                <p><span class="text-tactical-olive-light">const</span> driver = <span class="text-tactical-tan">#71_ELITE</span>;</p>
+                                <p class="text-emerald-400 pt-2">&gt; SYSTEM READY FOR LAUNCH_</p>
+                            </div>
+
+                            <div class="space-y-3 pt-2">
+                                <div class="flex justify-between text-xs font-mono">
+                                    <span class="text-tactical-tan/70">AERO EFFICIENCY</span>
+                                    <span class="text-tactical-coyote font-bold">99.9%</span>
+                                </div>
+                                <div class="w-full bg-tactical-950 h-2 border border-tactical-800 overflow-hidden">
+                                    <div class="bg-gradient-to-r from-tactical-olive to-tactical-coyote h-full w-[99.9%]"></div>
+                                </div>
+                            </div>
+
+                            <div class="pt-4 border-t border-tactical-800 flex items-center justify-between text-xs font-mono text-tactical-tan/60">
+                                <span>SECURE SSL LINK</span>
+                                <i class="fa-solid fa-shield-halved text-tactical-olive"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="py-24 bg-tactical-900/60 border-t border-tactical-800 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-16">
+                <div class="space-y-3">
+                    <div class="inline-flex items-center gap-2 font-mono text-xs text-tactical-coyote uppercase tracking-widest">
+                        <i class="fa-solid fa-cube text-[10px]"></i> Capabilities Matrix
+                    </div>
+                    <h2 class="text-3xl sm:text-5xl font-extrabold uppercase tracking-tight">Services Breakdown</h2>
+                </div>
+                <p class="text-tactical-tan/70 max-w-md mt-4 md:mt-0 font-light text-sm sm:text-base">
+                    Engineered for high-end brands, motorsport operations, and ambitious tech companies requiring absolute visual dominance and lightning speed.
+                </p>
+            </div>
+
+            <!-- Services Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Service 1 -->
+                <div class="bg-tactical-900 border border-tactical-800 p-8 clip-corner hover:border-tactical-olive transition-all duration-300 group flex flex-col justify-between">
+                    <div class="space-y-6">
+                        <div class="flex items-center justify-between">
+                            <div class="w-14 h-14 bg-tactical-950 border border-tactical-700 flex items-center justify-center text-tactical-coyote group-hover:text-tactical-sand group-hover:bg-tactical-olive transition-colors">
+                                <i class="fa-solid fa-compass-drafting text-xl"></i>
+                            </div>
+                            <span class="font-mono text-xs text-tactical-tan/40">01</span>
+                        </div>
+                        <h3 class="text-2xl font-bold uppercase tracking-wide group-hover:text-tactical-tan transition-colors">UI / UX Design</h3>
+                        <p class="text-tactical-tan/70 text-sm font-light leading-relaxed">
+                            Intuitive digital interfaces infused with tactical ergonomics, clear visual hierarchies, and frictionless conversion pathways designed to convert elite audiences.
+                        </p>
+                    </div>
+                    <div class="pt-6 mt-6 border-t border-tactical-800 flex items-center justify-between font-mono text-xs text-tactical-coyote">
+                        <span>DISCOVER ERGONOMICS</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="bg-tactical-900 border border-tactical-800 p-8 clip-corner hover:border-tactical-olive transition-all duration-300 group flex flex-col justify-between">
+                    <div class="space-y-6">
+                        <div class="flex items-center justify-between">
+                            <div class="w-14 h-14 bg-tactical-950 border border-tactical-700 flex items-center justify-center text-tactical-coyote group-hover:text-tactical-sand group-hover:bg-tactical-olive transition-colors">
+                                <i class="fa-solid fa-gauge-high text-xl"></i>
+                            </div>
+                            <span class="font-mono text-xs text-tactical-tan/40">02</span>
+                        </div>
+                        <h3 class="text-2xl font-bold uppercase tracking-wide group-hover:text-tactical-tan transition-colors">High-Performance Development</h3>
+                        <p class="text-tactical-tan/70 text-sm font-light leading-relaxed">
+                            Bespoke web architecture built with clean, modern code, advanced asset optimization, and lightning-fast server delivery for instant sub-second page loads.
+                        </p>
+                    </div>
+                    <div class="pt-6 mt-6 border-t border-tactical-800 flex items-center justify-between font-mono text-xs text-tactical-coyote">
+                        <span>EXPLORE SPEED</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="bg-tactical-900 border border-tactical-800 p-8 clip-corner hover:border-tactical-olive transition-all duration-300 group flex flex-col justify-between">
+                    <div class="space-y-6">
+                        <div class="flex items-center justify-between">
+                            <div class="w-14 h-14 bg-tactical-950 border border-tactical-700 flex items-center justify-center text-tactical-coyote group-hover:text-tactical-sand group-hover:bg-tactical-olive transition-colors">
+                                <i class="fa-solid fa-fingerprint text-xl"></i>
+                            </div>
+                            <span class="font-mono text-xs text-tactical-tan/40">03</span>
+                        </div>
+                        <h3 class="text-2xl font-bold uppercase tracking-wide group-hover:text-tactical-tan transition-colors">Visual Identity & Branding</h3>
+                        <p class="text-tactical-tan/70 text-sm font-light leading-relaxed">
+                            Commanding brand visual identities inspired by high-performance motorsport, tactical color theory (olive, coyote, tan), and unapologetic modern luxury.
+                        </p>
+                    </div>
+                    <div class="pt-6 mt-6 border-t border-tactical-800 flex items-center justify-between font-mono text-xs text-tactical-coyote">
+                        <span>EXPLORE IDENTITY</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="work" class="py-24 relative tactical-grid">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-16">
+                <div class="space-y-3">
+                    <div class="inline-flex items-center gap-2 font-mono text-xs text-tactical-coyote uppercase tracking-widest">
+                        <i class="fa-solid fa-terminal text-[10px]"></i> Operational Portfolio
+                    </div>
+                    <h2 class="text-3xl sm:text-5xl font-extrabold uppercase tracking-tight">Featured Projects</h2>
+                </div>
+                <!-- Filter buttons -->
+                <div class="mt-4 md:mt-0 flex flex-wrap gap-2 font-mono text-xs">
+                    <button class="px-4 py-2 bg-tactical-olive text-tactical-sand clip-corner filter-btn active transition-all" data-filter="all">ALL_MISSIONS</button>
+                    <button class="px-4 py-2 bg-tactical-900 border border-tactical-700 text-tactical-tan hover:text-tactical-sand clip-corner filter-btn transition-all" data-filter="motorsport">MOTORSPORT</button>
+                    <button class="px-4 py-2 bg-tactical-900 border border-tactical-700 text-tactical-tan hover:text-tactical-sand clip-corner filter-btn transition-all" data-filter="tech">TECH_STACK</button>
+                </div>
+            </div>
+
+            <!-- Portfolio Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Project 1 -->
+                <div class="project-card group bg-tactical-900 border border-tactical-800 clip-corner overflow-hidden hover:border-tactical-coyote transition-all duration-300" data-category="motorsport">
+                    <div class="relative h-64 bg-tactical-950 overflow-hidden">
+                        <img src="https://placehold.co/800x600/111511/81583E?text=VORTEX+GP+TELEMETRY" alt="Vortex GP" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80">
+                        <div class="absolute inset-0 bg-gradient-to-t from-tactical-950 via-transparent to-transparent"></div>
+                        <div class="absolute top-4 left-4 bg-tactical-950/85 backdrop-blur border border-tactical-700 px-3 py-1 font-mono text-[10px] text-tactical-coyote uppercase">
+                            Motorsport HUD
+                        </div>
+                        <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+                            <span class="font-mono text-xs text-tactical-tan/80">// OP-01</span>
+                            <span class="w-8 h-8 rounded-full bg-tactical-olive text-tactical-sand flex items-center justify-center font-mono text-xs font-bold">71</span>
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <h3 class="text-xl font-bold uppercase tracking-wide group-hover:text-tactical-tan transition-colors">Vortex GP Telemetry Portal</h3>
+                        <p class="text-tactical-tan/70 text-sm font-light">
+                            Real-time telemetry and data visualization interface built for endurance racing teams, featuring sub-millisecond updates and dark tactical mode.
+                        </p>
+                        <div class="flex flex-wrap gap-2 pt-2 font-mono text-[10px] text-tactical-coyote">
+                            <span class="px-2.5 py-1 bg-tactical-950 border border-tactical-800">React</span>
+                            <span class="px-2.5 py-1 bg-tactical-950 border border-tactical-800">WebGL</span>
+                            <span class="px-2.5 py-1 bg-tactical-950 border border-tactical-800">WebSocket</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="project-card group bg-tactical-900 border border-tactical-800 clip-corner overflow-hidden hover:border-tactical-coyote transition-all duration-300" data-category="tech">
+                    <div class="relative h-64 bg-tactical-950 overflow-hidden">
+                        <img src="https://placehold.co/800x600/111511/4B5320?text=AEGIS+DEFENSE" alt="Aegis Defense" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80">
+                        <div class="absolute inset-0 bg-gradient-to-t from-tactical-950 via-transparent to-transparent"></div>
+                        <div class="absolute top-4 left-4 bg-tactical-950/85 backdrop-blur border border-tactical-700 px-3 py-1 font-mono text-[10px] text-tactical-olive-light uppercase">
+                            Cyber Security
+                        </div>
+                        <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+                            <span class="font-mono text-xs text-tactical-tan/80">// OP-02</span>
+                            <span class="w-8 h-8 rounded-full bg-tactical-coyote text-tactical-950 flex items-center justify-center font-mono text-xs font-bold">71</span>
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <h3 class="text-xl font-bold uppercase tracking-wide group-hover:text-tactical-tan transition-colors">Aegis Cyber Architecture</h3>
+                        <p class="text-tactical-tan/70 text-sm font-light">
+                            Enterprise cybersecurity dashboard designed with impenetrable visual hierarchy, olive green color accents, and instant threat intelligence feeds.
+                        </p>
+                        <div class="flex flex-wrap gap-2 pt-2 font-mono text-[10px] text-tactical-coyote">
+                            <span class="px-2.5 py-1 bg-tactical-950 border border-tactical-800">Next.js</span>
+                            <span class="px-2.5 py-1 bg-tactical-950 border border-tactical-800">Tailwind</span>
+                            <span class="px-2.5 py-1 bg-tactical-950 border border-tactical-800">Node</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="project-card group bg-tactical-900 border border-tactical-800 clip-corner overflow-hidden hover:border-tactical-coyote transition-all duration-300" data-category="motorsport">
+                    <div class="relative h-64 bg-tactical-950 overflow-hidden">
+                        <img src="https://placehold.co/800x600/111511/D2B48C?text=APEX+CARBON" alt="Apex Carbon" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80">
+                        <div class="absolute inset-0 bg-gradient-to-t from-tactical-950 via-transparent to-transparent"></div>
+                        <div class="absolute top-4 left-4 bg-tactical-950/85 backdrop-blur border border-tactical-700 px-3 py-1 font-mono text-[10px] text-tactical-tan uppercase">
+                            E-Commerce
+                        </div>
+                        <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+                            <span class="font-mono text-xs text-tactical-tan/80">// OP-03</span>
+                            <span class="w-8 h-8 rounded-full bg-tactical-olive text-tactical-sand flex items-center justify-center font-mono text-xs font-bold">71</span>
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <h3 class="text-xl font-bold uppercase tracking-wide group-hover:text-tactical-tan transition-colors">Apex Carbon Aerodynamics</h3>
+                        <p class="text-tactical-tan/70 text-sm font-light">
+                            High-end headless e-commerce store built for bespoke carbon fiber automotive components and professional aero kits.
+                        </p>
+                        <div class="flex flex-wrap gap-2 pt-2 font-mono text-[10px] text-tactical-coyote">
+                            <span class="px-2.5 py-1 bg-tactical-950 border border-tactical-800">Shopify Plus</span>
+                            <span class="px-2.5 py-1 bg-tactical-950 border border-tactical-800">Hydrogen</span>
+                            <span class="px-2.5 py-1 bg-tactical-950 border border-tactical-800">GraphQL</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="philosophy" class="py-24 bg-tactical-900 border-t border-b border-tactical-800 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <div class="lg:col-span-6 space-y-8">
+                    <div class="inline-flex items-center gap-2 font-mono text-xs text-tactical-coyote uppercase tracking-widest">
+                        <i class="fa-solid fa-radar text-[10px]"></i> Operational Creed
+                    </div>
+                    
+                    <h2 class="text-3xl sm:text-5xl font-extrabold uppercase tracking-tight leading-tight">
+                        Precision. Speed. <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-tactical-tan to-tactical-olive">Zero Friction.</span>
+                    </h2>
+
+                    <p class="text-tactical-tan/80 font-light leading-relaxed">
+                        Inspired by endurance motorsport and tactical engineering, Mavro.kinetic eliminates digital drag. We believe every millisecond of load time and every pixel of interface design dictates whether a brand leads or gets left behind.
+                    </p>
+
+                    <!-- Checklist -->
+                    <div class="space-y-4 font-mono text-sm">
+                        <div class="flex items-start gap-3">
+                            <div class="w-5 h-5 bg-tactical-olive/20 border border-tactical-olive flex items-center justify-center text-tactical-olive mt-0.5">
+                                <i class="fa-solid fa-check text-xs"></i>
+                            </div>
+                            <div>
+                                <span class="font-bold text-tactical-sand">Tactical Color Theory:</span> Tactical olive green (#4B5320), coyote brown (#81583E), and tan (#D2B48C).
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-5 h-5 bg-tactical-olive/20 border border-tactical-olive flex items-center justify-center text-tactical-olive mt-0.5">
+                                <i class="fa-solid fa-check text-xs"></i>
+                            </div>
+                            <div>
+                                <span class="font-bold text-tactical-sand">Driver #71 Motif:</span> A tribute to endurance racing heritage and relentless forward momentum.
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-5 h-5 bg-tactical-olive/20 border border-tactical-olive flex items-center justify-center text-tactical-olive mt-0.5">
+                                <i class="fa-solid fa-check text-xs"></i>
+                            </div>
+                            <div>
+                                <span class="font-bold text-tactical-sand">Clean Code Standards:</span> Hand-crafted semantic architecture optimized for absolute speed and accessibility.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6 relative">
+                    <div class="relative bg-tactical-950 border border-tactical-700/80 p-8 clip-corner shadow-2xl">
+                        <!-- Header -->
+                        <div class="flex items-center justify-between border-b border-tactical-800 pb-4 mb-6">
+                            <span class="font-mono text-xs text-tactical-tan uppercase tracking-widest">UNIT #71 DOSSIER</span>
+                            <span class="w-3 h-3 bg-tactical-coyote rounded-full animate-ping"></span>
+                        </div>
+
+                        <!-- Quote box -->
+                        <blockquote class="space-y-4">
+                            <p class="text-lg text-tactical-sand italic font-light">
+                                "In endurance racing and digital design alike, victory belongs to those who eliminate friction. Every microsecond matters; every design choice must serve a purpose."
+                            </p>
+                            <footer class="flex items-center gap-4 pt-4 border-t border-tactical-800">
+                                <div class="w-12 h-12 bg-tactical-olive text-tactical-sand font-mono font-bold flex items-center justify-center clip-corner">
+                                    71
+                                </div>
+                                <div>
+                                    <div class="font-bold text-sm tracking-wider uppercase font-mono text-tactical-sand">Mavro.kinetic Command</div>
+                                    <div class="text-xs text-tactical-tan/60 font-mono">Lead Digital Architect</div>
+                                </div>
+                            </footer>
+                        </blockquote>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-24 relative tactical-grid">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="inline-flex items-center gap-2 font-mono text-xs text-tactical-coyote uppercase tracking-widest">
+                        <i class="fa-solid fa-satellite-dish text-[10px]"></i> Secure Communications
+                    </div>
+                    <h2 class="text-3xl sm:text-5xl font-extrabold uppercase tracking-tight">Initialize Mission</h2>
+                    <p class="text-tactical-tan/70 font-light leading-relaxed">
+                        Ready to upgrade your digital operations? Transmit your project details below for custom design sprints, development, or performance audits.
+                    </p>
+
+                    <div class="space-y-4 pt-4 font-mono text-sm">
+                        <div class="flex items-center gap-4 p-4 bg-tactical-900 border border-tactical-800 clip-corner">
+                            <div class="w-10 h-10 bg-tactical-950 text-tactical-coyote flex items-center justify-center border border-tactical-700">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-tactical-tan/60 uppercase">Direct Frequency</div>
+                                <div class="text-tactical-sand font-bold">command@mavrokinetic.com</div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 p-4 bg-tactical-900 border border-tactical-800 clip-corner">
+                            <div class="w-10 h-10 bg-tactical-950 text-tactical-olive flex items-center justify-center border border-tactical-700">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-tactical-tan/60 uppercase">Base Station</div>
+                                <div class="text-tactical-sand font-bold">Global Operations // Remote First</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Form Container -->
+                <div class="lg:col-span-7">
+                    <div class="bg-tactical-900 border border-tactical-800 p-8 sm:p-10 clip-corner shadow-2xl relative">
+                        
+                        <!-- Success Notification Box -->
+                        <div id="form-success" class="hidden absolute inset-0 bg-tactical-900 z-20 flex flex-col items-center justify-center text-center p-8 space-y-4">
+                            <div class="w-16 h-16 bg-tactical-olive text-tactical-sand flex items-center justify-center text-2xl clip-corner">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold uppercase tracking-wide">Transmission Received</h3>
+                            <p class="text-tactical-tan/80 text-sm max-w-md font-light">
+                                Unit 71 has logged your request. Our tactical team will review parameters and respond within 24 standard hours.
+                            </p>
+                            <button id="reset-form-btn" class="px-6 py-3 bg-tactical-olive text-tactical-sand font-mono text-xs uppercase tracking-widest clip-corner mt-4">
+                                Send Another Transmission
+                            </button>
+                        </div>
+
+                        <form id="quote-form" class="space-y-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div class="space-y-2">
+                                    <label class="block font-mono text-xs text-tactical-tan uppercase tracking-wider">Operator Name *</label>
+                                    <input type="text" id="name-input" required placeholder="John Doe" class="w-full bg-tactical-950 border border-tactical-700 px-4 py-3 text-tactical-sand font-mono text-sm focus:outline-none focus:border-tactical-olive transition-colors clip-corner">
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="block font-mono text-xs text-tactical-tan uppercase tracking-wider">Secure Email *</label>
+                                    <input type="email" id="email-input" required placeholder="john@domain.com" class="w-full bg-tactical-950 border border-tactical-700 px-4 py-3 text-tactical-sand font-mono text-sm focus:outline-none focus:border-tactical-olive transition-colors clip-corner">
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="block font-mono text-xs text-tactical-tan uppercase tracking-wider">Service Requirement *</label>
+                                <select id="service-select" class="w-full bg-tactical-950 border border-tactical-700 px-4 py-3 text-tactical-sand font-mono text-sm focus:outline-none focus:border-tactical-olive transition-colors clip-corner">
+                                    <option>UI / UX Design & Ergonomics</option>
+                                    <option>High-Performance Development</option>
+                                    <option>Visual Identity & Branding (Spec 71)</option>
+                                    <option>Full-Stack Digital Architecture</option>
+                                </select>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="block font-mono text-xs text-tactical-tan uppercase tracking-wider">Mission Brief / Details *</label>
+                                <textarea id="message-input" rows="4" required placeholder="Describe your project goals, timeline, and specifications..." class="w-full bg-tactical-950 border border-tactical-700 px-4 py-3 text-tactical-sand font-mono text-sm focus:outline-none focus:border-tactical-olive transition-colors clip-corner resize-none"></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full py-4 bg-tactical-olive hover:bg-tactical-olive-light text-tactical-sand font-mono text-sm font-bold uppercase tracking-widest clip-corner border border-tactical-coyote/60 transition-all duration-300 shadow-lg flex items-center justify-center gap-3">
+                                <span>Transmit Mission Request</span>
+                                <i class="fa-solid fa-paper-plane text-xs"></i>
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-tactical-950 border-t border-tactical-800 py-12 text-tactical-tan/60 font-mono text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-tactical-olive text-tactical-sand font-black text-xs flex items-center justify-center clip-corner">
+                    71
+                </div>
+                <span class="uppercase tracking-widest text-tactical-sand font-bold">@mavro.kinetic</span>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <a href="#services" class="hover:text-tactical-sand transition-colors">Services</a>
+                <a href="#work" class="hover:text-tactical-sand transition-colors">Operations</a>
+                <a href="#philosophy" class="hover:text-tactical-sand transition-colors">Philosophy</a>
+                <a href="#contact" class="hover:text-tactical-sand transition-colors">Contact</a>
+            </div>
+
+            <div class="text-[10px] text-tactical-tan/40">
+                &copy; 2026 MAVRO.KINETIC. ALL RIGHTS RESERVED. UNIT 71 ACTIVE.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu on link click
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Portfolio filtering logic
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const projectCards = document.querySelectorAll('.project-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update active button styles
+                filterBtns.forEach(b => {
+                    b.classList.remove('bg-tactical-olive', 'text-tactical-sand');
+                    b.classList.add('bg-tactical-900', 'border', 'border-tactical-700', 'text-tactical-tan');
+                });
+                btn.classList.remove('bg-tactical-900', 'border', 'border-tactical-700', 'text-tactical-tan');
+                btn.classList.add('bg-tactical-olive', 'text-tactical-sand');
+
+                const filter = btn.getAttribute('data-filter');
+
+                projectCards.forEach(card => {
+                    if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Form validation and success notification
+        const quoteForm = document.getElementById('quote-form');
+        const formSuccess = document.getElementById('form-success');
+        const resetFormBtn = document.getElementById('reset-form-btn');
+
+        quoteForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Simple validation check
+            const name = document.getElementById('name-input').value.trim();
+            const email = document.getElementById('email-input').value.trim();
+            const message = document.getElementById('message-input').value.trim();
+
+            if (!name || !email || !message) {
+                return;
+            }
+
+            const submitBtn = quoteForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> TRANSMITTING...';
+            submitBtn.disabled = true;
+
+            // Simulate server handshake
+            setTimeout(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                formSuccess.classList.remove('hidden');
+                quoteForm.reset();
+            }, 1200);
+        });
+
+        resetFormBtn.addEventListener('click', () => {
+            formSuccess.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
+```
